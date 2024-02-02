@@ -378,7 +378,6 @@
         var maxfounded = 0;
         async function processData(cname) {
             setCookie(cname);
-            //const response = await fetch(`${document.URL}?da=2`);
             const response = await fetch(`https://golandbackend-09fdf720d244.herokuapp.com/data`);
 
             dataFromApi = await response.text();
