@@ -1,0 +1,684 @@
+<style>
+    canvas {
+        padding-left: 0px !important;
+    }
+
+    .container {
+        width: 920px;
+        height: 600px;
+        display: flex;
+        flex-direction: row;
+    }
+
+    .graphTools {
+        width: 129px;
+        background-color: #2c3436;
+        padding: 0.8%;
+    }
+
+    .graphView {
+        width: 828px;
+        display: flex;
+        flex-direction: column;
+        background-color: black;
+    }
+
+    .graphView__top {
+        flex: 95;
+        display: flex;
+        flex-direction: row;
+    }
+
+    .graphView__yAxis {
+        flex: 3;
+        position: relative;
+        display: grid;
+        grid-template-rows: 0.163fr 1fr;
+    }
+
+    #canvasYAxis {
+        position: absolute;
+        grid-row: 2;
+    }
+
+    .graphView__graphs {
+        flex: 97;
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        grid-template-rows: 0.87fr 1fr 1fr 1fr 1fr;
+        grid-column-gap: 0px;
+        grid-row-gap: 0px;
+    }
+
+    .graphView__leyend {
+        grid-row: 1;
+        grid-column: 2 / 5;
+        position: relative;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+    }
+
+    .graphView__data {
+        grid-row: 2 / 6;
+        grid-column: 1 /6;
+        position: relative;
+    }
+
+    .graphView__bg {
+        grid-row: 1 / 6;
+        grid-column: 1 /6;
+        position: relative;
+        border: 1px solid gray;
+        display: grid;
+        grid-template-rows: 0.163fr 1fr;
+    }
+
+    #canvasbg {
+        position: absolute;
+        grid-row: 2;
+    }
+
+
+    #canvasXAxis {
+        position: absolute;
+    }
+
+    #canvasdata {
+        position: absolute;
+    }
+
+    #canvasly {
+        position: absolute;
+    }
+
+    .graphView__bottom {
+        flex: 5;
+        display: flex;
+        flex-direction: row;
+    }
+
+    .graphView__xAxis {
+        flex: 97;
+        position: relative;
+    }
+
+    .graphView__empty {
+        flex: 3;
+    }
+
+    .sidepanel__title {
+        margin-bottom: 0.75rem;
+        font-size: 1.125rem;
+        color: white;
+        font-weight: 300;
+        letter-spacing: 0.125rem;
+        padding-bottom: 0.375rem;
+        border-bottom: 1px solid white;
+    }
+
+    .sidepanel__content--grid {
+        display: grid;
+        gap: 0.375rem;
+        grid-template-columns: repeat(auto-fit, minmax(3.75rem, 1fr));
+    }
+
+    .tool__box {
+        flex: 1;
+        margin-bottom: 0.8vh;
+    }
+
+    #ly-circle1 {
+        color: red;
+        display: block;
+    }
+
+    #ly-circle2 {
+        color: green;
+        display: block;
+    }
+
+    #ly-circle3 {
+        color: blue;
+        display: initial;
+    }
+
+    #ly-circle4 {
+        color: yellow;
+        display: block;
+    }
+
+    #ly-circle5 {
+        color: cyan;
+        display: block;
+    }
+
+    #ly-circle6 {
+        color: magenta;
+        display: block;
+    }
+
+    .picker__button {
+        border: 0;
+        height: 100%;
+        width: 3.125rem;
+        min-width: 3.125rem;
+        padding: 0.1875rem 0.75rem;
+        transition: 0.3s;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .picker__button:hover {
+        background-color: rgba(222, 255, 168, 0.655)
+    }
+
+    .sidepanel__button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.25rem 0.625rem;
+        background-color: transparent;
+        border: 1px solid white;
+        color: white;
+        margin-top: 0.625rem;
+        align-self: flex-end;
+        transition: .3s;
+    }
+
+    .range__selection {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .range__selection__input {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .range__selection__input label {
+        color: white;
+        pointer-events: none;
+        margin-bottom: 0.25rem;
+        font-size: 0.6875rem;
+        margin-top: 0.375rem;
+        letter-spacing: 0.1rem;
+    }
+
+    .range__selection__applyB {
+        float: right;
+        margin-top: 4%;
+    }
+
+    .range__selection__checkbox label {
+        color: white;
+    }
+
+    .picker__button__action {
+        border: 0;
+        height: 100%;
+        padding: 0.1875rem 0.75rem;
+        transition: 0.3s;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .picker__button__action:hover {
+        background-color: #92B372;
+    }
+
+    .button-8 {
+        background-color: #e1ecf4;
+        border-radius: 3px;
+        border: 1px solid #7aa7c7;
+        box-shadow: rgba(255, 255, 255, .7) 0 1px 0 0 inset;
+        box-sizing: border-box;
+        color: #39739d;
+        cursor: pointer;
+        display: inline-block;
+        font-family: -apple-system, system-ui, 'Segoe UI', 'Liberation Sans', sans-serif;
+        font-size: 13px;
+        font-weight: 400;
+        line-height: 1.15385;
+        margin: 0;
+        outline: none;
+        padding: 8px .8em;
+        position: relative;
+        text-align: center;
+        text-decoration: none;
+        user-select: none;
+        -webkit-user-select: none;
+        touch-action: manipulation;
+        vertical-align: baseline;
+        white-space: nowrap;
+    }
+
+    .button-8:hover,
+    .button-8:focus {
+        background-color: #b3d3ea;
+        color: #2c5777;
+    }
+
+    .button-8:focus {
+        box-shadow: 0 0 0 4px rgba(0, 149, 255, .15);
+    }
+
+    .button-8:active {
+        background-color: #a0c7e4;
+        box-shadow: none;
+        color: #2c5777;
+    }
+</style>
+
+<body>
+    <div class='container'>
+        <div class='graphTools'>
+            <div class='tool__box'>
+                <div class='sidepanel__title'>Data Values</div>
+                <div>
+                    <div class='range__selection__checkbox'>
+                        <input type='checkbox' name='s' class='' value='circle' id='cb-circle1'>
+                        <label for='cb-circle1'>C/N local</label>
+                    </div>
+                    <div class='range__selection__checkbox'>
+                        <input type='checkbox' name='' class='' value='circle' id='cb-circle2'>
+                        <label for='cb-circle2'>C/N remote</label>
+                    </div>
+                    <div class='range__selection__checkbox'>
+                        <input type='checkbox' name='' class='' value='circle' id='cb-circle3'>
+                        <label for='cb-circle3'>TX level</label>
+                    </div>
+                    <div class='range__selection__checkbox'>
+                        <input type='checkbox' name='' class='' value='circle' id='cb-circle4'>
+                        <label for='cb-circle4'>TX MODCOD</label>
+                    </div>
+                    <div class='range__selection__checkbox'>
+                        <input type='checkbox' name='' class='' value='circle' id='cb-circle5'>
+                        <label for='cb-circle5'>RX MODCOD</label>
+                    </div>
+                    <div class='range__selection__checkbox'>
+                        <input type='checkbox' name='' class='' value='circle' id='cb-circle6'>
+                        <label for='cb-circle6'>Lock</label>
+                    </div>
+                </div>
+            </div>
+            <div class='tool__box'>
+                <div class='sidepanel__title'>CVS</div>
+                <button class='button-8' onclick="window.open('cc73?da=1','_blank');" type='button'>Download</button>
+                <!-- <button class='button-8' onclick=\"window.open('cc73?da=1','_blank');\" type='button'>Download</button> -->
+            </div>
+        </div>
+        <div class='graphView'>
+            <div class='graphView__top'>
+                <div id='graphView__yAxis' class='graphView__yAxis'></div>
+                <div class='graphView__graphs'>
+                    <div id='graphView__leyend' class='graphView__leyend'>
+                        <div id='ly-circle1'>C/N local</div>
+                        <div id='ly-circle2'>C/N remote</div>
+                        <div id='ly-circle3'>TX level</div>
+                        <div id='ly-circle4'>TX MODCOD</div>
+                        <div id='ly-circle5'>RX MODCOD</div>
+                        <div id='ly-circle6'>Lock</div>
+                    </div>
+                    <div id='graphView__bg' class='graphView__bg'></div>
+                    <div id='graphView__data' class='graphView__data'></div>
+                </div>
+            </div>
+            <div class='graphView__bottom'>
+                <div class='graphView__empty'></div>
+                <div id='graphView__xAxis' class='graphView__xAxis'></div>
+            </div>
+        </div>
+    </div>
+    <script>
+        var dataFromApi = [];
+        var txtnumber = 0;
+        function separatorData(d) {
+            let cookieData = getCookie('selected');
+            for (g = 0; g < 6; g++) {
+                var circleFill = document.getElementById(`cb-circle${g + 1}`);
+                var leyendShow = document.getElementById(`ly-circle${g + 1}`);
+                dataValuesSelection[g].data = [];
+                dataValuesSelection[g].selected = getCookie('selected').charAt(g) == '1' ? true : false;
+                if (getCookie('selected').charAt(g) == '1') {
+                    circleFill.checked = true;
+                    leyendShow.style.display = 'initial';
+                } else {
+                    circleFill.checked = false;
+                    leyendShow.style.display = 'none';
+                }
+                dataValuesSelection[g].data.push(d[g]);
+                for (i = 1; i < 512; i++) {
+                    dataValuesSelection[g].data.push(d[6 * i + g]);
+                }
+            }
+        }
+        function maxFounder(data) {
+            var maximum = 0;
+            for (var i = 0, l = data.length; i < l; i++) {
+                var tempMax = 0;
+                var obj = data[i].data;
+                if (data[i].selected) {
+                    tempMax = Math.max(...obj);
+                    if (tempMax > maximum) {
+                        maximum = tempMax;
+                    }
+                }
+            }
+            return maximum;
+        }
+        var maxfounded = 0;
+        async function processData(cname) {
+            setCookie(cname);
+            //const response = await fetch(`${document.URL}?da=2`);
+            const response = await fetch(`http://127.0.0.1:5500/jjj.html`);
+            dataFromApi = await response.text();
+            let final_data_process = [];
+            dataFromApi.split('#')[4].split('=')[1].split(';').forEach(el => {
+                el.split(',').map(el => {
+                    let n = Number(el);
+                    let result = n === 0 ? n : n || el;
+                    result = result < 0 ? 0 : result;
+                    final_data_process.push(result);
+                    return n === 0 ? n : n || el;
+                }
+                );
+            }
+            );
+            console.log(final_data_process)
+            d = final_data_process;
+            xd.clearRect(0, 0, canvasdata.width, canvasdata.height);
+            xyA.clearRect(0, 0, canvasYAxis.width, canvasYAxis.height);
+            xbg.clearRect(0, 0, canvasbg.width, canvasbg.height);
+            this.separatorData(d);
+
+            maxfounded = this.maxFounder(dataValuesSelection);
+            var numbersToShow = {};
+            var numbersToShowList = [];
+
+            for (var i = 0, l = dataValuesSelection.length; i < l; i++) {
+                var obj = dataValuesSelection[i].data;
+                if (dataValuesSelection[i].selected) {
+                    this.drawLineData(i, obj);
+                    numbersToShow = {...numbersToShow, ...this.foundNumberToShow(obj)};
+                    numbersToShowList.push(this.foundNumberToShow(obj));
+                }
+            }
+            console.log(numbersToShowList);
+            this.drawBgYAxisNumbers(maxfounded, numbersToShow);
+
+        }
+        var dataValuesSelection = [{
+            name: 'C/N local',
+            selected: true,
+        }, {
+            name: 'C/N remote',
+            selected: true,
+        }, {
+            name: 'TX leve',
+            selected: true,
+        }, {
+            name: 'TX MODCOD',
+            selected: true,
+        }, {
+            name: 'RX MODCOD',
+            selected: true,
+        }, {
+            name: 'Lock',
+            selected: true,
+        },];
+        var cnlocalB = document.getElementById('cb-circle1');
+        var cnremoteB = document.getElementById('cb-circle2');
+        var txlevelB = document.getElementById('cb-circle3');
+        var txmodcodB = document.getElementById('cb-circle4');
+        var rxmodcodB = document.getElementById('cb-circle5');
+        var lockB = document.getElementById('cb-circle6');
+        var graphView__bg = document.getElementById('graphView__bg');
+        var canvasbg = document.createElement('canvas');
+        var graphView__data = document.getElementById('graphView__data');
+        var canvasdata = document.createElement('canvas');
+        var graphView__yAxis = document.getElementById('graphView__yAxis');
+        var canvasYAxis = document.createElement('canvas');
+        var graphView__xAxis = document.getElementById('graphView__xAxis');
+        var canvasXAxis = document.createElement('canvas');
+        var colors = ['red', 'green', 'blue', 'yellow', 'cyan', 'magenta'];
+        canvasbg.setAttribute('id', 'canvasbg');
+        canvasdata.setAttribute('id', 'canvasdata');
+        canvasYAxis.setAttribute('id', 'canvasYAxis');
+        canvasXAxis.setAttribute('id', 'canvasXAxis');
+        cnlocalB.addEventListener('click', cnlocalBActionAbutton());
+        cnremoteB.addEventListener('click', cnremoteBActionAbutton());
+        txlevelB.addEventListener('click', txlevelBActionAbutton());
+        txmodcodB.addEventListener('click', txmodcodBActionAbutton());
+        rxmodcodB.addEventListener('click', rxmodcodBActionAbutton());
+        lockB.addEventListener('click', lockBActionAbutton());
+        canvasbg.width = graphView__bg.clientWidth;
+
+        canvasbg.height = graphView__data.clientHeight + 17;
+
+        canvasYAxis.width = graphView__yAxis.clientWidth;
+
+        graphView__yAxis.height = graphView__data.clientHeight - 5;
+
+        canvasYAxis.height = graphView__data.clientHeight + 17;
+
+        canvasXAxis.width = graphView__xAxis.clientWidth;
+        canvasXAxis.height = graphView__xAxis.clientHeight;
+        canvasdata.width = graphView__data.clientWidth;
+        canvasdata.height = graphView__data.clientHeight;
+        graphView__bg.appendChild(canvasbg);
+        graphView__yAxis.appendChild(canvasYAxis);
+        graphView__xAxis.appendChild(canvasXAxis);
+        graphView__data.appendChild(canvasdata);
+        xbg = canvasbg.getContext('2d');
+        xd = canvasdata.getContext('2d');
+        xyA = canvasYAxis.getContext('2d');
+        xXA = canvasXAxis.getContext('2d');
+        for (let index = 1; index <= 6; index++) {
+            var leyendShow = document.getElementById(`ly-circle${index}`);
+            leyendShow.style.display = 'none';
+        }
+        var maxvalues = 10;
+        var colorLabels = 'white';
+        function axisInputAction() {
+            return function () {
+                var yAxisInput = document.getElementById('xyAxisInput').value;
+                var xAxisInput = document.getElementById('xAxisInput').value;
+                maxvalues = yAxisInput;
+                xbg.clearRect(0, 0, canvasbg.width, canvasbg.height);
+                xyA.clearRect(0, 0, canvasYAxis.width, canvasYAxis.height);
+                xXA.clearRect(0, 0, canvasXAxis.width, canvasXAxis.height);
+                xd.clearRect(0, 0, canvasdata.width, canvasdata.height);
+                drawBgDashLines();
+                drawBgYAxis();
+                drawLineData();
+            }
+        }
+        function fillDataValues(elementSelected) {
+            dataValuesSelection[elementSelected].selected = !(dataValuesSelection[elementSelected].selected);
+            for (let index = 1; index <= dataValuesSelection.length; index++) {
+                var circleFill = document.getElementById(`cb-circle${index}`);
+                var leyendShow = document.getElementById(`ly-circle${index}`);
+                if (dataValuesSelection[index - 1].selected) {
+                    circleFill.checked = true;
+                    leyendShow.style.display = 'initial';
+                } else {
+                    circleFill.checked = false;
+                    leyendShow.style.display = 'none';
+                }
+            }
+        }
+        function cnlocalBActionAbutton() {
+            return function () {
+                xd.clearRect(0, 0, canvasdata.width, canvasdata.height);
+                processData(0);
+            }
+        }
+        function cnremoteBActionAbutton() {
+            return function () {
+                xd.clearRect(0, 0, canvasdata.width, canvasdata.height);
+                processData(1);
+            }
+        }
+        function txlevelBActionAbutton() {
+            return function () {
+                xd.clearRect(0, 0, canvasdata.width, canvasdata.height);
+                processData(2);
+            }
+        }
+        function txmodcodBActionAbutton() {
+            return function () {
+                xd.clearRect(0, 0, canvasdata.width, canvasdata.height);
+                processData(3);
+            }
+        }
+        function rxmodcodBActionAbutton() {
+            return function () {
+                xd.clearRect(0, 0, canvasdata.width, canvasdata.height);
+                processData(4);
+            }
+        }
+        function lockBActionAbutton() {
+            return function () {
+                xd.clearRect(0, 0, canvasdata.width, canvasdata.height);
+                processData(5);
+            }
+        }
+        function drawBgDashLines() {
+            for (let index = 0; index < maxvalues; index += 1) {
+                xbg.beginPath();
+                var yLine = (index * graphView__bg.clientHeight) / maxvalues;
+                var xLine = (maxvalues * graphView__bg.clientWidth) / maxvalues;
+                xbg.moveTo(0, yLine);
+                xbg.lineTo(xLine, yLine);
+                xbg.strokeStyle = colorLabels;
+                xbg.setLineDash([2, 3]);
+                xbg.stroke();
+            }
+        }
+        var cw = canvasdata.width;
+        var ch = canvasdata.height;
+        var bottomy = 467;
+        var begx = 0;
+        var endx = 790;
+        Array.prototype.count = function (obj) {
+            var count = this.length;
+            if (typeof (obj) !== 'undefined') {
+                var array = this.slice(0), count = 0;
+                for (i = 0; i < array.length; i++) {
+                    if (array[i] == obj) { count++ }
+                }
+            }
+            return count;
+        };
+        function foundNumberToShow(array) {
+            let occurred = [];
+            array.filter(function (item) {
+                if (!occurred.includes(item)) {
+                    occurred.push(item);
+                    return true;
+                }
+            });
+            let occurrences = {};
+            occurred.forEach((item) => {
+                if (item!=0) {
+                    occurrences[item] = item;
+                }
+            });
+            return occurrences;
+        }
+        function calcPositionLine(value) {
+            var perc = Math.ceil((value * 100) / maxfounded);
+            var offset = Math.ceil(484 - ((perc * 484) / 100));
+            return offset;
+        }
+
+        function drawBgYAxisNumbers(maxfoundedV, numberToShow) {
+            console.log(numberToShow)
+
+            var yAxisvaluesCalc = graphView__bg.clientHeight - (84);
+            xyA.fillStyle = colorLabels;
+            xbg.fillStyle = colorLabels;
+            xbg.strokeStyle = colorLabels;
+            xbg.beginPath();
+            xyA.fillText(0, 6, 484);
+            Object.keys(numberToShow).forEach(function (key) {
+                var val = numberToShow[key];
+                xyA.fillText(key, 6, this.calcPositionLine(key)+25);
+                xbg.moveTo(begx, this.calcPositionLine(key)+21);
+                xbg.lineTo(endx, this.calcPositionLine(key)+21);
+            });
+            xbg.stroke();
+        }
+        function drawLineData(valueLine, data) {
+            xd.beginPath();
+            xd.moveTo(begx, bottomy);
+            xd.fillStyle = colors[valueLine];
+            xd.strokeStyle = colors[valueLine];
+            var currentXpointer = begx;
+            var offsetAxis = 1.54296875;
+            for (let index = 0; index < data.length; index++) {
+                const element = data[index];
+                if (element == 0) {
+                    xd.lineTo(currentXpointer, bottomy);
+                    currentXpointer = currentXpointer + offsetAxis;
+                } else {
+                    xd.lineTo(currentXpointer, this.calcPositionLine(element));
+                    currentXpointer = currentXpointer + offsetAxis;
+                }
+            }
+            xd.stroke();
+        }
+        function getCookie(cname) {
+            var name = cname + '=';
+            var ca = document.cookie.split(';');
+            for (var i = 0; i < ca.length; i++) {
+                var c = ca[i];
+                while (c.charAt(0) == ' ') {
+                    c = c.substring(1);
+                }
+                if (c.indexOf(name) == 0) {
+                    return c.substring(name.length, c.length);
+                }
+            }
+            return '';
+        }
+        function setCookie(cname) {
+            if (typeof cname == 'undefined') {
+                if (getCookie('selected').length == 0) {
+                    document.cookie = 'selected=111111';
+                } else { }
+            } else {
+                let inputSelection = getCookie('selected');
+                let inputNewValue = inputSelection.charAt(cname) == '1' ? '0' : '1';
+                let compString = `selected=`;
+                for (var i = 0; i < 6; i++) {
+                    if (i == cname) {
+                        compString += inputNewValue;
+                        dataValuesSelection[i].selected = inputNewValue == '1' ? true : false;
+                    } else {
+                        compString += inputSelection[i];
+                        dataValuesSelection[i].selected = inputSelection[i] == '1' ? true : false;
+                    }
+                    document.cookie = compString;
+                }
+            }
+        }
+        function moveLineData() { }
+            //var myInterval = setInterval(function () {
+            var myInterval = setTimeout(function () {
+            this.processData();
+            txtnumber = (txtnumber < 69) ? txtnumber + 1 : 0;
+        }, 1000);
+    </script>
+</BODY>
+
+</HTML>
