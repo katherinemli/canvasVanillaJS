@@ -396,30 +396,26 @@
             d = final_data_process;
             xd.clearRect(0, 0, canvasdata.width, canvasdata.height);
             xyA.clearRect(0, 0, canvasYAxis.width, canvasYAxis.height);
+            xXA.clearRect(0, 0, canvasXAxis.width, canvasXAxis.height);
             xbg.clearRect(0, 0, canvasbg.width, canvasbg.height);
             this.separatorData(d);
-
-            maxfounded = this.maxFounder(dataValuesSelection);
+            maxfounded = 250;
             var numbersToShow = {};
-            var numbersToShowList = [];
-
             for (var i = 0, l = dataValuesSelection.length; i < l; i++) {
                 var obj = dataValuesSelection[i].data;
                 if (dataValuesSelection[i].selected) {
-                    this.drawLineData(i, obj);
-                    numbersToShow = { ...numbersToShow, ...this.foundNumberToShow(obj) };
-                    numbersToShowList.push(this.foundNumberToShow(obj));
+                    this.drawLineData(i, obj, starTime);
+                    numbersToShow = this.foundNumberToShow(obj);
                 }
             }
-            console.log(numbersToShowList);
-            this.drawBgYAxisNumbers(maxfounded, numbersToShow);
+            this.drawBgYAxisNumbers(maxfounded, numbersToShow, starTime, stepValue, numEntryValue);
 
         }
         var dataValuesSelection = [{
-            name: 'C/N local',
+            name: 'C/N',
             selected: true,
         }, {
-            name: 'C/N remote',
+            name: 'GW C/N',
             selected: true,
         }, {
             name: 'TX leve',
@@ -428,7 +424,7 @@
             name: 'TX MODCOD',
             selected: true,
         }, {
-            name: 'RX MODCOD',
+            name: 'MODCOD',
             selected: true,
         }, {
             name: 'Lock',
@@ -448,7 +444,7 @@
         var canvasYAxis = document.createElement('canvas');
         var graphView__xAxis = document.getElementById('graphView__xAxis');
         var canvasXAxis = document.createElement('canvas');
-        var colors = ['red', '#7CFC00', '#4169e1', '#FFFF00', 'cyan', 'magenta'];
+        var colors = ['red', 'magenta', '#FFFF00', 'cyan', '#7CFC00', '#0036ff'];
         canvasbg.setAttribute('id', 'canvasbg');
         canvasdata.setAttribute('id', 'canvasdata');
         canvasYAxis.setAttribute('id', 'canvasYAxis');
@@ -487,34 +483,7 @@
         }
         var maxvalues = 10;
         var colorLabels = 'white';
-        function axisInputAction() {
-            return function () {
-                var yAxisInput = document.getElementById('xyAxisInput').value;
-                var xAxisInput = document.getElementById('xAxisInput').value;
-                maxvalues = yAxisInput;
-                xbg.clearRect(0, 0, canvasbg.width, canvasbg.height);
-                xyA.clearRect(0, 0, canvasYAxis.width, canvasYAxis.height);
-                xXA.clearRect(0, 0, canvasXAxis.width, canvasXAxis.height);
-                xd.clearRect(0, 0, canvasdata.width, canvasdata.height);
-                drawBgDashLines();
-                drawBgYAxis();
-                drawLineData();
-            }
-        }
-        function fillDataValues(elementSelected) {
-            dataValuesSelection[elementSelected].selected = !(dataValuesSelection[elementSelected].selected);
-            for (let index = 1; index <= dataValuesSelection.length; index++) {
-                var circleFill = document.getElementById(`cb-circle${index}`);
-                var leyendShow = document.getElementById(`ly-circle${index}`);
-                if (dataValuesSelection[index - 1].selected) {
-                    circleFill.checked = true;
-                    leyendShow.style.display = 'initial';
-                } else {
-                    circleFill.checked = false;
-                    leyendShow.style.display = 'none';
-                }
-            }
-        }
+
         function cnlocalBActionAbutton() {
             return function () {
                 xd.clearRect(0, 0, canvasdata.width, canvasdata.height);
@@ -551,96 +520,112 @@
                 processData(5);
             }
         }
-        function drawBgDashLines() {
-            for (let index = 0; index < maxvalues; index += 1) {
-                xbg.beginPath();
-                var yLine = (index * graphView__bg.clientHeight) / maxvalues;
-                var xLine = (maxvalues * graphView__bg.clientWidth) / maxvalues;
-                xbg.moveTo(0, yLine);
-                xbg.lineTo(xLine, yLine);
-                xbg.strokeStyle = colorLabels;
-                xbg.setLineDash([2, 3]);
-                xbg.stroke();
-            }
-        }
-        var cw = canvasdata.width;
-        var ch = canvasdata.height;
+
         var bottomy = 467;
         var begx = 0;
-        var endx = 790;
+        var endx = 750;
         Array.prototype.count = function (obj) {
             var count = this.length;
             if (typeof (obj) !== 'undefined') {
-                var array = this.slice(0), count = 0;
+                var array = this.slice(0);
+                var count = 0;
                 for (i = 0; i < array.length; i++) {
-                    if (array[i] == obj) { count++ }
+                    if (array[i] == obj) { count++; }
                 }
             }
             return count;
         };
+        let totalOcurrence = 0;
         function foundNumberToShow(array) {
-            let occurred = [];
-            array.filter(function (item) {
-                if (!occurred.includes(item)) {
-                    occurred.push(item);
-                    return true;
-                }
-            });
-            let occurrences = {};
-            occurred.forEach((item) => {
-                if (item != 0) {
-                    occurrences[item] = item;
-                }
-            });
-            if (Object.keys(occurrences).length > 7) {
-                const sliced = Object.keys(occurrences).slice(0, 7).reduce((result, key) => {
-                    result[key] = occurrences[key];
-                    return result;
-                }, {});
-
-
-                return sliced;
-            }
-            return occurrences;
+            return { 25: 25, 50: 50, 75: 75, 100: 100, 125: 125, 150: 150, 175: 175, 200: 200, 225: 225, 250: 250 };
         }
         function calcPositionLine(value) {
             var perc = Math.ceil((value * 100) / maxfounded);
             var offset = Math.ceil(484 - ((perc * 484) / 100));
             return offset;
         }
-
-        function drawBgYAxisNumbers(maxfoundedV, numberToShow) {
-            console.log(numberToShow)
-
+        function calcPositionDahsLine(value) {
+            var perc = Math.ceil((value * 100) / maxfounded);
+            var offset = Math.ceil(484 - ((perc * 484) / 100));
+            return offset + 22;
+        }
+        function calcPositionDahsNumber(value) {
+            var perc = Math.ceil((value * 100) / maxfounded);
+            var offset = Math.ceil(484 - ((perc * 484) / 100));
+            return offset + 19;
+        }
+        function addZero(date) {
+            return ('0' + date).slice(-2);
+        }
+        function drawBgYAxisNumbers(maxfoundedV, numberToShow, starTime, stepValue, numEntryValue) {
+            var offsetAxis = 76;
             var yAxisvaluesCalc = graphView__bg.clientHeight - (84);
             xyA.fillStyle = colorLabels;
+            xyA.fillText(0, 6, 484);
+            xXA.fillStyle = colorLabels;
+            xXA.font = `14px Verdana`;
+            xbg.beginPath();
             xbg.fillStyle = colorLabels;
             xbg.strokeStyle = colorLabels;
-            xbg.beginPath();
-            xyA.fillText(0, 6, 484);
+            xbg.setLineDash([3, 10]);
             Object.keys(numberToShow).forEach(function (key) {
                 var val = numberToShow[key];
-                xyA.fillText(key, 6, this.calcPositionLine(key) + 25);
-                xbg.moveTo(begx, this.calcPositionLine(key) + 21);
-                xbg.lineTo(endx, this.calcPositionLine(key) + 21);
+                xyA.fillText(key, 6, this.calcPositionDahsNumber(key) + 8);
+                xbg.moveTo(begx, this.calcPositionDahsLine(key));
+                xbg.lineTo(endx, this.calcPositionDahsLine(key));
+
             });
+            var splitTime = starTime.replace('+', '').split(':');
+            var now = new Date();
+            var mult = (numEntryValue * stepValue) / 1000;
+            now.setHours(Number(splitTime[0]), Number(splitTime[1]), Number(splitTime[2]) + mult, 0);
+            var minTime4 = this.subtractMinutes(now, 4);
+            var minTime3 = this.subtractMinutes(now, 3);
+            var minTime2 = this.subtractMinutes(now, 2);
+            var minTime1 = this.subtractMinutes(now, 1);
+            var minTime0 = now;
+            xbg.moveTo(endx - (4 * 177.6), this.calcPositionDahsLine(0));
+            xbg.lineTo(endx - (4 * 177.6), this.calcPositionDahsLine(249));
+            xXA.fillText(`${this.addZero(minTime4.getHours())}:${this.addZero(minTime4.getMinutes())}:${this.addZero(minTime4.getSeconds())}`, endx - (4 * 177.6) - 25, 12);
+
+            xbg.moveTo(endx - (3 * 177.6), this.calcPositionDahsLine(0));
+            xbg.lineTo(endx - (3 * 177.6), this.calcPositionDahsLine(249));
+            xXA.fillText(`${this.addZero(minTime3.getHours())}:${this.addZero(minTime3.getMinutes())}:${this.addZero(minTime3.getSeconds())}`, endx - (3 * 177.6) - 25, 12);
+
+            xbg.moveTo(endx - (2 * 177.6), this.calcPositionDahsLine(0));
+            xbg.lineTo(endx - (2 * 177.6), this.calcPositionDahsLine(249));
+            xXA.fillText(`${this.addZero(minTime2.getHours())}:${this.addZero(minTime2.getMinutes())}:${this.addZero(minTime2.getSeconds())}`, endx - (2 * 177.6) - 25, 12);
+
+            xbg.moveTo(endx - 177.6, this.calcPositionDahsLine(0));
+            xbg.lineTo(endx - 177.6, this.calcPositionDahsLine(249));
+            xXA.fillText(`${this.addZero(minTime1.getHours())}:${this.addZero(minTime1.getMinutes())}:${this.addZero(minTime1.getSeconds())}`, endx - 177.6 - 25, 12);
+
+            xbg.moveTo(endx, this.calcPositionDahsLine(0));
+            xbg.lineTo(endx, this.calcPositionDahsLine(249));
+            xXA.fillText(`${this.addZero(now.getHours())}:${this.addZero(now.getMinutes())}:${this.addZero(now.getSeconds())}`, endx - 60, 12);
             xbg.stroke();
         }
-        function drawLineData(valueLine, data) {
-            xd.beginPath();
-            xd.moveTo(begx, bottomy);
+        function drawLineData(valueLine, data, starTime) {
+            var offsetAxis = 1.48;
+            var drawed = false;
+            var currentXpointer = begx;
             xd.fillStyle = colors[valueLine];
             xd.strokeStyle = colors[valueLine];
-            var currentXpointer = begx;
-            var offsetAxis = 1.54296875;
+            xd.beginPath();
+            xd.moveTo(begx, bottomy);
             for (let index = 0; index < data.length; index++) {
+
+                globalFlagTik = globalFlagTik + 1;
+                if (globalFlagTik % 512 == 0) {
+                    isTik = isTik + 1;
+                }
                 const element = data[index];
+
                 if (element == 0) {
-                    xd.lineTo(currentXpointer, bottomy);
-                    currentXpointer = currentXpointer + offsetAxis;
-                } else {
-                    xd.lineTo(currentXpointer, this.calcPositionLine(element));
-                    currentXpointer = currentXpointer + offsetAxis;
+                    xd.lineTo(offsetAxis * index, bottomy);
+                }
+                else {
+                    xd.lineTo(offsetAxis * index, this.calcPositionLine(element));
                 }
             }
             xd.stroke();
@@ -680,9 +665,9 @@
                 }
             }
         }
-        function moveLineData() { }
-        //var myInterval = setInterval(function () {
-        var myInterval = setTimeout(function () {
+        let globalFlagTik = 0;
+        let isTik = 0;
+        var myInterval = setInterval(function () {
             this.processData();
             txtnumber = (txtnumber < 69) ? txtnumber + 1 : 0;
         }, 1000);
