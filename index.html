@@ -382,7 +382,9 @@
 
             dataFromApi = await response.text();
             let final_data_process = [];
-
+            let starTime = '18:17:53';
+            let stepValue = 500;
+            let numEntryValue = 512;
             dataFromApi.split(':')[1].replace('[', '').replace(']', '').replace('}', '').split(',').map(el => {
 
                 let n = Number(el);
