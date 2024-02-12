@@ -11,7 +11,7 @@
     }
 
     .graphTools {
-        width: 129px;
+        width: 132px;
         background-color: #2c3436;
         padding: 0.8%;
     }
@@ -52,7 +52,7 @@
 
     .graphView__leyend {
         grid-row: 1;
-        grid-column: 2 / 5;
+        grid-column: 1 / 6;
         position: relative;
         display: flex;
         flex-direction: row;
@@ -110,7 +110,7 @@
 
     .sidepanel__title {
         margin-bottom: 0.75rem;
-        font-size: 1.125rem;
+        font-size: 1rem;
         color: white;
         font-weight: 300;
         letter-spacing: 0.125rem;
@@ -135,27 +135,27 @@
     }
 
     #ly-circle2 {
-        color: green;
+        color: magenta;
         display: block;
     }
 
     #ly-circle3 {
-        color: blue;
+        color: #FFFF00;
         display: initial;
     }
 
     #ly-circle4 {
-        color: yellow;
-        display: block;
-    }
-
-    #ly-circle5 {
         color: cyan;
         display: block;
     }
 
+    #ly-circle5 {
+        color: #7CFC00;
+        display: block;
+    }
+
     #ly-circle6 {
-        color: magenta;
+        color: #0036ff;
         display: block;
     }
 
@@ -217,6 +217,7 @@
 
     .range__selection__checkbox label {
         color: white;
+        font-size: 0.9rem;
     }
 
     .picker__button__action {
@@ -286,11 +287,11 @@
                 <div>
                     <div class='range__selection__checkbox'>
                         <input type='checkbox' name='s' class='' value='circle' id='cb-circle1'>
-                        <label for='cb-circle1'>C/N local</label>
+                        <label for='cb-circle1'>C/N</label>
                     </div>
                     <div class='range__selection__checkbox'>
                         <input type='checkbox' name='' class='' value='circle' id='cb-circle2'>
-                        <label for='cb-circle2'>C/N remote</label>
+                        <label for='cb-circle2'>GW C/N</label>
                     </div>
                     <div class='range__selection__checkbox'>
                         <input type='checkbox' name='' class='' value='circle' id='cb-circle3'>
@@ -302,7 +303,7 @@
                     </div>
                     <div class='range__selection__checkbox'>
                         <input type='checkbox' name='' class='' value='circle' id='cb-circle5'>
-                        <label for='cb-circle5'>RX MODCOD</label>
+                        <label for='cb-circle5'>MODCOD</label>
                     </div>
                     <div class='range__selection__checkbox'>
                         <input type='checkbox' name='' class='' value='circle' id='cb-circle6'>
@@ -310,23 +311,18 @@
                     </div>
                 </div>
             </div>
-            <div class='tool__box'>
-                <div class='sidepanel__title'>CVS</div>
-                <button class='button-8' onclick="window.open('cc73?da=1','_blank');" type='button'>Download</button>
-                <!-- <button class='button-8' onclick=\"window.open('cc73?da=1','_blank');\" type='button'>Download</button> -->
-            </div>
         </div>
         <div class='graphView'>
             <div class='graphView__top'>
                 <div id='graphView__yAxis' class='graphView__yAxis'></div>
                 <div class='graphView__graphs'>
                     <div id='graphView__leyend' class='graphView__leyend'>
-                        <div id='ly-circle1'>C/N local</div>
-                        <div id='ly-circle2'>C/N remote</div>
+                        <div id='ly-circle1'>C/N</div>
+                        <div id='ly-circle5'>MODCOD</div>
+                        <div id='ly-circle6'>Lock</div>
                         <div id='ly-circle3'>TX level</div>
                         <div id='ly-circle4'>TX MODCOD</div>
-                        <div id='ly-circle5'>RX MODCOD</div>
-                        <div id='ly-circle6'>Lock</div>
+                        <div id='ly-circle2'>GW C/N</div>
                     </div>
                     <div id='graphView__bg' class='graphView__bg'></div>
                     <div id='graphView__data' class='graphView__data'></div>
