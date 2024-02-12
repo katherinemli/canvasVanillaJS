@@ -668,7 +668,7 @@
         }
         let globalFlagTik = 0;
         let isTik = 0;
-        var myInterval = setInterval(function () {
+        var myInterval = setTimeout(function () {
             this.processData();
             txtnumber = (txtnumber < 69) ? txtnumber + 1 : 0;
         }, 1000);
